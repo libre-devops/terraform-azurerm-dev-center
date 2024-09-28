@@ -1,6 +1,6 @@
 # Dev Center Resource
 resource "azurerm_dev_center" "dev_centers" {
-  for_each = { for dc in var.dev_centers : dc.name => dc }
+  for_each            = { for dc in var.dev_centers : dc.name => dc }
   location            = each.value.location
   name                = each.value.name
   resource_group_name = each.value.rg_name
@@ -41,12 +41,12 @@ resource "azurerm_dev_center_network_connection" "network_connections" {
   subnet_id           = each.value.network_connection.subnet_id
 
   # Optional attributes
-  domain_name         = try(each.value.network_connection.domain_name, null)
-  domain_password     = try(each.value.network_connection.domain_password, null)
-  domain_username     = try(each.value.network_connection.domain_username, null)
-  organization_unit   = try(each.value.network_connection.organization_unit, null)
+  domain_name       = try(each.value.network_connection.domain_name, null)
+  domain_password   = try(each.value.network_connection.domain_password, null)
+  domain_username   = try(each.value.network_connection.domain_username, null)
+  organization_unit = try(each.value.network_connection.organization_unit, null)
 
-  tags                = azurerm_dev_center.dev_centers[each.key].tags
+  tags = azurerm_dev_center.dev_centers[each.key].tags
 }
 
 # Compute Gallery Resource
@@ -86,8 +86,8 @@ resource "azurerm_role_assignment" "contributor" {
     for dc in var.dev_centers : dc.name => dc
     if lookup(dc, "create_compute_gallery", false) == true
   }
-  principal_id = azurerm_dev_center.dev_centers[each.key].identity[0].principal_id
-  scope        = azurerm_dev_center.dev_centers[each.key].id
+  principal_id         = azurerm_dev_center.dev_centers[each.key].identity[0].principal_id
+  scope                = azurerm_dev_center.dev_centers[each.key].id
   role_definition_name = "Contributor"
 }
 
@@ -100,7 +100,7 @@ resource "azurerm_dev_center_gallery" "galleries" {
   }
 
   dev_center_id     = azurerm_dev_center.dev_centers[each.key].id
-  shared_gallery_id = azurerm_shared_image_gallery.compute_gallery[each.key].id  # Reference the compute gallery's ID
+  shared_gallery_id = azurerm_shared_image_gallery.compute_gallery[each.key].id # Reference the compute gallery's ID
   name              = each.value.compute_gallery.name
 }
 
@@ -110,13 +110,13 @@ resource "azurerm_dev_center_project" "projects" {
     if lookup(dc, "create_project", false) == true
   }
 
-  dev_center_id             = azurerm_dev_center.dev_centers[each.key].id
-  location                  = azurerm_dev_center.dev_centers[each.key].location
-  name                      = each.value.project.name != null ? each.value.project.name : "proj-${each.key}"
-  resource_group_name       = azurerm_dev_center.dev_centers[each.key].resource_group_name
-  description               = try(each.value.project.description, "Default project description for ${each.key}")
+  dev_center_id              = azurerm_dev_center.dev_centers[each.key].id
+  location                   = azurerm_dev_center.dev_centers[each.key].location
+  name                       = each.value.project.name != null ? each.value.project.name : "proj-${each.key}"
+  resource_group_name        = azurerm_dev_center.dev_centers[each.key].resource_group_name
+  description                = try(each.value.project.description, "Default project description for ${each.key}")
   maximum_dev_boxes_per_user = try(each.value.project.maximum_dev_boxes_per_user, null)
-  tags                      = try(each.value.project.tags, azurerm_dev_center.dev_centers[each.key].tags)
+  tags                       = try(each.value.project.tags, azurerm_dev_center.dev_centers[each.key].tags)
 }
 
 resource "azurerm_dev_center_catalog" "catalogs" {
