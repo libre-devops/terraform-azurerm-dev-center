@@ -2,7 +2,7 @@
 module "rg" {
   source = "libre-devops/rg/azurerm"
 
-  rg_name  = "rg-${var.short}-${var.loc}-${var.env}-01"
+  rg_name  = "rg-${var.short}-${var.loc}-${var.env}-02"
   location = local.location
   tags     = local.tags
 }
@@ -33,7 +33,7 @@ module "network" {
   location = module.rg.rg_location
   tags     = module.rg.rg_tags
 
-  vnet_name          = "vnet-${var.short}-${var.loc}-${var.env}-01"
+  vnet_name          = "vnet-${var.short}-${var.loc}-${var.env}-02"
   vnet_location      = module.rg.rg_location
   vnet_address_space = [module.subnet_calculator.base_cidr]
 
@@ -60,7 +60,7 @@ module "nsg" {
   location = module.rg.rg_location
   tags     = module.rg.rg_tags
 
-  nsg_name              = "nsg-${var.short}-${var.loc}-${var.env}-01"
+  nsg_name              = "nsg-${var.short}-${var.loc}-${var.env}-02"
   associate_with_subnet = true
   subnet_id             = module.network.subnets_ids["subnet1"]
   custom_nsg_rules = {
@@ -99,19 +99,12 @@ module "dev_centers" {
 
       identity_type = "SystemAssigned"
 
-      name = "devc-${var.short}-${var.loc}-${var.env}-01"
+      name = "devc-${var.short}-${var.loc}-${var.env}-02"
 
       network_connection = {
         subnet_id = module.network.subnets_ids["subnet1"]
       }
 
-      create_compute_gallery = true
-      compute_gallery = {
-        name     = "gal${var.short}${var.loc}${var.env}01"
-        rg_name  = module.rg.rg_name
-        location = module.rg.rg_location
-        tags     = module.rg.rg_tags
-      }
       create_project = true
       project = {
         description                = "This is the first Dev Center project."
@@ -120,40 +113,40 @@ module "dev_centers" {
     }
   ]
 }
-
-module "images" {
-  source = "registry.terraform.io/libre-devops/compute-gallery-image/azurerm"
-
-  rg_name  = module.rg.rg_name
-  location = module.rg.rg_location
-  tags     = module.rg.rg_tags
-
-
-  gallery_name = module.dev_centers.gallery_name["devc-${var.short}-${var.loc}-${var.env}-01"]
-  images = [
-    {
-      name                                = "AzDoWindows2022"
-      description                         = "Azure DevOps image based on Windows 2022 image"
-      specialised                         = false
-      hyper_v_generation                  = "V2"
-      os_type                             = "Windows"
-      accelerated_network_support_enabled = true
-      max_recommended_vcpu                = 16
-      min_recommended_vcpu                = 2
-      max_recommended_memory_in_gb        = 32
-      min_recommended_memory_in_gb        = 8
-
-      identifier = {
-        offer     = "AzdoWindowsServer"
-        publisher = "LibreDevOps"
-        sku       = "AzdoWin2022"
-      }
-    }
-  ]
-}
-
-
-
+#
+# module "images" {
+#   source = "registry.terraform.io/libre-devops/compute-gallery-image/azurerm"
+#
+#   rg_name  = module.rg.rg_name
+#   location = module.rg.rg_location
+#   tags     = module.rg.rg_tags
+#
+#
+#   gallery_name = module.dev_centers.gallery_name["devc-${var.short}-${var.loc}-${var.env}-01"]
+#   images = [
+#     {
+#       name                                = "AzDoWindows2022"
+#       description                         = "Azure DevOps image based on Windows 2022 image"
+#       specialised                         = false
+#       hyper_v_generation                  = "V2"
+#       os_type                             = "Windows"
+#       accelerated_network_support_enabled = true
+#       max_recommended_vcpu                = 16
+#       min_recommended_vcpu                = 2
+#       max_recommended_memory_in_gb        = 32
+#       min_recommended_memory_in_gb        = 8
+#
+#       identifier = {
+#         offer     = "AzdoWindowsServer"
+#         publisher = "LibreDevOps"
+#         sku       = "AzdoWin2022"
+#       }
+#     }
+#   ]
+# }
+#
+#
+#
 ```
 ## Requirements
 
@@ -171,7 +164,6 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_dev_centers"></a> [dev\_centers](#module\_dev\_centers) | ../../ | n/a |
-| <a name="module_images"></a> [images](#module\_images) | registry.terraform.io/libre-devops/compute-gallery-image/azurerm | n/a |
 | <a name="module_network"></a> [network](#module\_network) | libre-devops/network/azurerm | n/a |
 | <a name="module_nsg"></a> [nsg](#module\_nsg) | libre-devops/nsg/azurerm | n/a |
 | <a name="module_rg"></a> [rg](#module\_rg) | libre-devops/rg/azurerm | n/a |
@@ -193,12 +185,12 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_Regions"></a> [Regions](#input\_Regions) | Converts shorthand name to longhand name via lookup on map list | `map(string)` | <pre>{<br>  "eus": "East US",<br>  "euw": "West Europe",<br>  "uks": "UK South",<br>  "ukw": "UK West"<br>}</pre> | no |
+| <a name="input_Regions"></a> [Regions](#input\_Regions) | Converts shorthand name to longhand name via lookup on map list | `map(string)` | <pre>{<br/>  "eus": "East US",<br/>  "euw": "West Europe",<br/>  "uks": "UK South",<br/>  "ukw": "UK West"<br/>}</pre> | no |
 | <a name="input_env"></a> [env](#input\_env) | This is passed as an environment variable, it is for the shorthand environment tag for resource.  For example, production = prod | `string` | `"prd"` | no |
 | <a name="input_loc"></a> [loc](#input\_loc) | The shorthand name of the Azure location, for example, for UK South, use uks.  For UK West, use ukw. Normally passed as TF\_VAR in pipeline | `string` | `"uks"` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of this resource | `string` | `"tst"` | no |
 | <a name="input_short"></a> [short](#input\_short) | This is passed as an environment variable, it is for a shorthand name for the environment, for example hello-world = hw | `string` | `"lbd"` | no |
-| <a name="input_static_tags"></a> [static\_tags](#input\_static\_tags) | The tags variable | `map(string)` | <pre>{<br>  "Contact": "info@cyber.scot",<br>  "CostCentre": "671888",<br>  "ManagedBy": "Terraform"<br>}</pre> | no |
+| <a name="input_static_tags"></a> [static\_tags](#input\_static\_tags) | The tags variable | `map(string)` | <pre>{<br/>  "Contact": "info@cyber.scot",<br/>  "CostCentre": "671888",<br/>  "ManagedBy": "Terraform"<br/>}</pre> | no |
 
 ## Outputs
 
