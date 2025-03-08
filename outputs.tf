@@ -33,32 +33,32 @@ output "dev_center_network_connection_ids" {
 
 output "dev_center_project_id" {
   description = "The ID of the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.id }
-}
-
-output "dev_center_project_name" {
-  description = "The name of the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.name }
-}
-
-output "dev_center_project_uri" {
-  description = "The URI of the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.dev_center_uri }
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.id }
 }
 
 output "dev_center_project_location" {
   description = "The location of the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.location }
-}
-
-output "dev_center_project_resource_group" {
-  description = "The resource group of the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.resource_group_name }
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.location }
 }
 
 output "dev_center_project_max_dev_boxes" {
   description = "The maximum dev boxes per user for the created Dev Center Project"
-  value = { for key, project in azurerm_dev_center_project.projects : key => project.maximum_dev_boxes_per_user }
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.maximum_dev_boxes_per_user }
+}
+
+output "dev_center_project_name" {
+  description = "The name of the created Dev Center Project"
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.name }
+}
+
+output "dev_center_project_resource_group" {
+  description = "The resource group of the created Dev Center Project"
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.resource_group_name }
+}
+
+output "dev_center_project_uri" {
+  description = "The URI of the created Dev Center Project"
+  value       = { for key, project in azurerm_dev_center_project.projects : key => project.dev_center_uri }
 }
 
 output "dev_center_tags" {
